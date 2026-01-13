@@ -43,22 +43,22 @@ if res:
 
 #### 1. What problems do you see with this code?
    - **Potencial para prompt injection**: O conteúdo do e-mail é inserido diretamente no prompt sem isolamento ou reforço de instruções.
-   - **Ausência de system prompt**: O código utiliza apenas a permissão de usuário (user) para pássaro promtp, então a política de segurança se torna fraca.
+   - **Ausência de system prompt**: O código utiliza apenas a permissão de usuário (user) para passar o prompt, então a política de segurança se torna fraca.
    - **Dependência frágil de `chat.completions` e ausência de controle rígido da saída**: A validação depende do modelo “obedecer” ao formato passado por prompt, sem schema ou contrato forte. O modelo pode retornar texto fora do JSON, quebrando json.loads().
-   - **Uso de “think step by step”**: Pode incentiva raciocínio explícito, aumentando o risco de saída não estruturada.
+   - **Uso de “think step by step”**: Pode incentivar o raciocínio explícito na saída, aumentando o risco de saída não estruturada.
    - **'temperature' inadequada (1.0)**: Alta variabilidade para uma tarefa determinística de classificação.
-   - **'max_tokens' insuficiente**: pode interromper a resposta e gerar JSON incompleto.
+   - **'max_tokens' insuficiente**: Pode interromper a resposta e gerar JSON incompleto.
    - **Falta de tratamento de exceções**: Erros de API ou falhas no parse de JSON não são tratados.
 
 #### 2. What ideas do you have to make it better? 
 
-Construir um validador de e-mails de spam usando a API Responses da OpenAI, com foco em robustez de prompt, saida estruturada e validação por schema (Pydantic). Exatamento o que este projeto faz!
+Construir um validador de e-mails de spam usando a API Responses da OpenAI, com foco em robustez de prompt, saída estruturada e validação por DTO Pydantic. Exatamento o que este projeto faz!
 
 ## O que este projeto melhora em relação ao código original?
 
 - Proteção contra *prompt injection* com políticas explícitas no system prompt.
-- Saída obrigatoriamente em JSON (DTO com Pydantic) e validação via `responses.parse`.
-- Remoção de "think step by step" para reduzir vazamento de raciocínio e saidas fora do formato.
+- Saída obrigatoriamente em DTO Pydantic e validação via `responses.parse`.
+- Remoção de "think step by step" para reduzir vazamento de raciocínio e saídas fora do formato.
 - Separação em camadas (loader, assembler, generator) para facilitar testes e manutenção.
 - Logging básico para diagnóstico de falhas.
 
